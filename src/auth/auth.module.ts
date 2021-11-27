@@ -5,15 +5,19 @@ import { JwtStrategy } from './jwt.strategy';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { jwtConstants } from "./constants";
+import { PrismaService } from '../prisma.service';
 
 @Module({
   imports: [
     PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
+      signOptions: {
+        expiresIn: '1d',
+      },
     }),
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, PrismaService],
   controllers: [AuthController]
 })
 export class AuthModule {}
