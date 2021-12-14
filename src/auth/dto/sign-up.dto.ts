@@ -7,6 +7,5 @@ export class SignUpDto {
   password: string;
   @IsNotEmpty()
   name: string;
-  @IsNotEmpty()
   photo: string;
 }

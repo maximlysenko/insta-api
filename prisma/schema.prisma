@@ -8,18 +8,55 @@ datasource db {
 }
 
 model User {
-  id       Int     @default(autoincrement()) @id
-  email    String  @unique
-  password String
-  name     String
-  photo    String
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now())
+  email     String   @unique
+  password  String
+  author    Author?
+}
+
+model Author {
+  id       String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name     String    @db.VarChar(255)
+  photo    String?
+  likes    Like[]
   posts    Post[]
+  comments Comment[]
+  user     User      @relation(fields: [userId], references: [id])
+  userId   String    @unique @db.Uuid
 }
 
 model Post {
-  id       Int @default(autoincrement()) @id
-  image    String
-  text     String
-  authorId Int
-  author   User @relation(fields: [authorId], references: [id])
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  image     String
+  text      String
+  likes     Like[]
+  comments  Comment[]
+  authorId  String    @db.Uuid
+  author    Author    @relation(fields: [authorId], references: [id])
+}
+
+model Comment {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  text      String
+  likes     Like[]
+  authorId  String   @db.Uuid
+  author    Author   @relation(fields: [authorId], references: [id])
+  postId    String   @db.Uuid
+  post      Post     @relation(fields: [postId], references: [id])
+}
+
+model Like {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  datetime  DateTime
+  authorId  String   @db.Uuid
+  author    Author   @relation(fields: [authorId], references: [id])
+  postId    String?  @db.Uuid
+  post      Post?    @relation(fields: [postId], references: [id])
+  commentId String?  @db.Uuid
+  comment   Comment? @relation(fields: [commentId], references: [id])
 }

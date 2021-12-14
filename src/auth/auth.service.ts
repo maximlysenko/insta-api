@@ -1,7 +1,7 @@
-import * as bcrypt from 'bcrypt';
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '../prisma.service';
+import * as bcrypt from "bcrypt";
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { PrismaService } from "../prisma.service";
 import { SignInDto } from "./dto/sign-in.dto";
 import { SignUpDto } from "./dto/sign-up.dto";
 
@@ -26,13 +26,18 @@ export class AuthService {
   }
 
   async signIn(signInDto: SignInDto) {
-    const foundUser = await this.prisma.user.findUnique({ where: { email: signInDto.email } });
+    const foundUser = await this.prisma.user.findUnique({
+      where: { email: signInDto.email },
+    });
 
     if (foundUser === null) {
       throw new BadRequestException("Email or password is incorrect");
     }
 
-    const passwordsMatch = await bcrypt.compare(signInDto.password, foundUser.password);
+    const passwordsMatch = await bcrypt.compare(
+      signInDto.password,
+      foundUser.password,
+    );
 
     if (!passwordsMatch) {
       throw new BadRequestException("Email or password is incorrect");
