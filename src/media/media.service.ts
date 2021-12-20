@@ -4,9 +4,7 @@ import { Injectable } from "@nestjs/common";
 @Injectable()
 export class MediaService {
   async upload(file: Express.Multer.File) {
-    const blobClient = this.getBlobClient(file.originalname);
-
-    return blobClient.uploadData(file.buffer);
+    return this.getBlobClient(file.originalname).uploadData(file.buffer);
   }
 
   private getBlobClient(imageName: string): BlockBlobClient {
